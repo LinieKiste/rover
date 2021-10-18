@@ -43,7 +43,7 @@ class colorSens:
 
     @staticmethod
     def is_green(col):
-        return col[0] < 10 and 20 <= col[1]
+        return 20 <= col[1]
 
     @staticmethod
     def is_red(col):
