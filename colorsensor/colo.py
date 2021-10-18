@@ -40,29 +40,29 @@ class colorSens:
         else:
             self.show_color()
 
+
+    @staticmethod
+    def is_between_green_and_blue(col):
+        return col[0] < 10 and 10 <= col[1] and 10 <= col[2]
+
+    @staticmethod
+    def is_between_green_and_red(col):
+        return 10 <= col[0] and 10 <= col[1] and col[2] < 10
     @staticmethod
     def is_green(col):
-        if col[0] < 20 and 17 <= col[1] and col[2] < 20:
-            return True
-        return False
+        return col[0] < 20 and 17 <= col[1] and col[2] < 20
 
     @staticmethod
     def is_red(col):
-        if 20 <= col[0] and col[1] < 20 and col[2] < 20:
-            return True
-        return False
+        return 20 <= col[0] and col[1] < 20 and col[2] < 20
 
     @staticmethod
     def is_blue(col):
-        if col[0] < 20 and col[1] < 20 and 20 <= col[2]:
-            return True
-        return False
+        return col[0] < 20 and col[1] < 20 and 20 <= col[2]
 
     @staticmethod
     def is_white(col):
-        if col[0] < 20 and col[1] < 17 and col[2] < 20:
-            return True
-        return False
+        return col[0] < 20 and col[1] < 17 and col[2] < 20
 
     def show_color(self):
         print("RGB color as 8 bits per channel int:" +
