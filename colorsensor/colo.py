@@ -30,9 +30,7 @@ class colorSens:
         if new_data_from_sensor:
             self.get_color_from_sensor()
             self.get_color_rgb_from_sensor()
-        if c.is_between_green_and_red(self.color_rgb):
-            print("between_green_and_red")
-        elif c.is_red(self.color_rgb):
+        if c.is_red(self.color_rgb):
             print("red")
         elif c.is_green(self.color_rgb):
             print("green")
@@ -40,22 +38,12 @@ class colorSens:
             print("white")
         elif c.is_blue(self.color_rgb):
             print("blue")
-        elif c.is_between_green_and_blue(self.color_rgb):
-            print("between_green_and_blue")
         else:
             self.show_color()
 
     @staticmethod
-    def is_between_green_and_blue(col):
-        return col[0] < 10 and 10 <= col[1] and 10 <= col[2]
-
-    @staticmethod
-    def is_between_green_and_red(col):
-        return col[0] == 16 and col[1] == 16 and col[2] == 16
-
-    @staticmethod
     def is_green(col):
-        return col[0] < 20 and 20 <= col[1] and col[2] < 20
+        return col[0] < 10 and 20 <= col[1]
 
     @staticmethod
     def is_red(col):
