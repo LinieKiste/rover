@@ -51,15 +51,18 @@ class colorSens:
 
 if __name__ == "__main__":
     c = colorSens()
-    color = c.get_color()
     while True:
-        prev_color = color
         color = c.get_color()
         color_rgb = c.get_color_rgb()
+        if c.is_red(color_rgb):
+            print("red")
+        elif c.is_green(color_rgb):
+            print("green")
+        elif c.is_white(color_rgb):
+            print("white")
+        elif c.is_blue(color_rgb):
+            print("blue")
+        else:
+            print("RGB color as 8 bits per channel int: " +
+                  "#{0:02X} or as a 3-tuple: {1}".format(color, color_rgb))
 
-        if prev_color != color:
-            if not (c.is_red(color_rgb)) and not (c.is_blue(color_rgb)) and \
-                    not (c.is_white(color_rgb)) and not (c.is_green(color_rgb)):
-                print("RGB color as 8 bits per channel int: " +
-                      "#{0:02X} or as a 3-tuple: {1}".format(
-                          color, color_rgb))
