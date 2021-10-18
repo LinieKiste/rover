@@ -5,10 +5,16 @@ from colorsensor import colo
 from distanceSensor import rpTut
 import time
 
+counter = 0
 
 def findline(m):
     m.stop()
-
+    if counter < 9:
+        m.rotate(1)
+        time.sleep(1)
+    else:
+        m.rotate(-1)
+        time.sleep(1)
 
 def nav(m, c):
     while True:
