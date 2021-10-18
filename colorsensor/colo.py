@@ -42,25 +42,25 @@ class colorSens:
 
     @staticmethod
     def is_green(col):
-        if col[0] < 20 and 20 < col[1] and col[2] < 20:
+        if col[0] < 20 and 18 <= col[1] and col[2] < 20:
             return True
         return False
 
     @staticmethod
     def is_red(col):
-        if 20 < col[0] and col[1] < 20 and col[2] < 20:
+        if 20 <= col[0] and col[1] < 20 and col[2] < 20:
             return True
         return False
 
     @staticmethod
     def is_blue(col):
-        if col[0] < 20 and col[1] < 20 and 20 < col[2]:
+        if col[0] < 20 and col[1] < 20 and 20 <= col[2]:
             return True
         return False
 
     @staticmethod
     def is_white(col):
-        if col[0] < 20 and col[1] < 20 and col[2] < 20:
+        if col[0] < 20 and col[1] < 18 and col[2] < 20:
             return True
         return False
 
