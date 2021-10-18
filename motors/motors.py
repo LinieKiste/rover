@@ -19,11 +19,14 @@ class motors:
     def set_speed(self, new_speed):
         self.speed = new_speed
 
-    def rotate(self, a):
+    def rotate(self, angle):
         start = time.time()
-        while (time.time()-start < self.inertia):
-            explorerhat.motor.one.forward(a)
-            explorerhat.motor.two.backwards(a)
+        s = self.speed
+        self.speed = 60
+        while (time.time()-start < angle):
+            explorerhat.motor.one.forward(self.speed)
+            explorerhat.motor.two.backwards(self.speed)
+        self.speed = s
     
     def forwards(self):
         start = time.time()
