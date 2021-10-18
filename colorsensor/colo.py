@@ -20,26 +20,26 @@ class colorSens:
     def get_color_rgb(self):
         return self.sensor.color_rgb_bytes
 
-    def is_green(self):
-        col = self.get_color_rgb()
+    def is_green(self, col):
+        # col = self.get_color_rgb()
         if 10 < col[0] < 20 and 30 < col[1] < 40 and 10 < col[2] < 20:
             return True
         return False
 
-    def is_red(self):
-        col = self.get_color_rgb()
-        if 40 < col[0] < 60 and 0 < col[1] < 15 and 0 < col[2] < 15:
+    def is_red(self, col):
+        # col = self.get_color_rgb()
+        if 40 < col[0] < 100 and 0 < col[1] < 15 and 0 < col[2] < 15:
             return True
         return False
 
-    def is_blue(self):
-        col = self.get_color_rgb()
+    def is_blue(self, col):
+        # col = self.get_color_rgb()
         if 0 < col[0] < 10 and 10 < col[1] < 20 and 25 < col[2] < 40:
             return True
         return False
 
-    def is_white(self):
-        col = self.get_color_rgb()
+    def is_white(self, col):
+        # col = self.get_color_rgb()
         if 10 < col[0] < 20 and 10 < col[1] < 20 and 10 < col[2] < 20:
             return True
         return False
@@ -58,8 +58,8 @@ if __name__ == "__main__":
         color_rgb = c.get_color_rgb()
 
         if prev_color != color:
-            if not (c.is_red()) and not (c.is_blue()) and \
-                    not (c.is_white()) and not (c.is_green()):
+            if not (c.is_red(color)) and not (c.is_blue(color)) and \
+                    not (c.is_white(color)) and not (c.is_green(color)):
                 print("RGB color as 8 bits per channel int: " +
                       "#{0:02X} or as a 3-tuple: {1}".format(
                           color, color_rgb))
