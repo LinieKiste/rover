@@ -2,14 +2,21 @@
 
 from motors import motors
 from colorsensor import colo
+from distanceSensor import rpTut
+import time
 
 def nav(m, c):
-    m.rotate(50)
+    print("Hello")
     while True:
-        m.rotate(30)
-    while False:
-        if(c.isRed()):
-            m.forwards()
+        print(rpTut.distance())
+        print(f"distance = {rpTut.distance()} cm")
+        time.sleep(0.3)
+    while True:
+        if rpTut.distance() > 10:
+            if(c.isRed()):
+                m.forwards()
+            else:
+                m.stop()
         else:
             m.stop()
 
