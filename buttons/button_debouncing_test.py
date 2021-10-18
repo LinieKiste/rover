@@ -13,9 +13,9 @@ while True:
 
     if explorerhat.touch.one.is_pressed():
         counter += 1
-        # print("True")
+        print("True")
     else:
-        # print("False")
+        print("False")
         pass
 
     counter2 += 1
