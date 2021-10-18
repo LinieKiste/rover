@@ -51,7 +51,7 @@ class colorSens:
 
     @staticmethod
     def is_between_green_and_red(col):
-        return 10 <= col[0] and 10 <= col[1] and col[2] < 15
+        return 16 == col[0] and 16 == col[1] and 16 == col[2]
 
     @staticmethod
     def is_green(col):
