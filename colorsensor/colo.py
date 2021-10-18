@@ -37,9 +37,12 @@ class colorSens:
             print("white")
         elif c.is_blue(self.color_rgb):
             print("blue")
+        elif c.is_between_green_and_blue(self.color_rgb):
+            print("between_green_and_blue")
+        elif c.is_between_green_and_red(self.color_rgb):
+            print("between_green_and_red")
         else:
             self.show_color()
-
 
     @staticmethod
     def is_between_green_and_blue(col):
@@ -48,6 +51,7 @@ class colorSens:
     @staticmethod
     def is_between_green_and_red(col):
         return 10 <= col[0] and 10 <= col[1] and col[2] < 10
+
     @staticmethod
     def is_green(col):
         return col[0] < 20 and 17 <= col[1] and col[2] < 20
