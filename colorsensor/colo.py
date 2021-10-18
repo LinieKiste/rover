@@ -27,8 +27,8 @@ class colorSens:
 
     def get_color_name(self, new_data_from_sensor=True):
         if new_data_from_sensor:
-            self.get_color_from_sensor(self)
-            self.get_color_rgb_from_sensor(self)
+            self.get_color_from_sensor()
+            self.get_color_rgb_from_sensor()
         if c.is_red(self.color_rgb):
             print("red")
         elif c.is_green(self.color_rgb):
@@ -65,8 +65,8 @@ class colorSens:
         return False
 
     def show_color(self):
-        print("RGB color as 8 bits per channel int:"+
-              " #{0:02X} or as a 3-tuple: {1}".format(self.color,self.color_rgb))
+        print("RGB color as 8 bits per channel int:" +
+              " #{0:02X} or as a 3-tuple: {1}".format(self.color, self.color_rgb))
 
 
 if __name__ == "__main__":
