@@ -22,25 +22,25 @@ class colorSens:
 
     def is_green(self, col):
         # col = self.get_color_rgb()
-        if 10 < col[0] < 20 and 30 < col[1] < 40 and 10 < col[2] < 20:
+        if col[0] < 20 and 20 < col[1] and col[2] < 20:
             return True
         return False
 
     def is_red(self, col):
         # col = self.get_color_rgb()
-        if 40 < col[0] < 100 and 0 < col[1] < 15 and 0 < col[2] < 15:
+        if 20 < col[0] and col[1] < 20 and col[2] < 20:
             return True
         return False
 
     def is_blue(self, col):
         # col = self.get_color_rgb()
-        if 0 < col[0] < 10 and 10 < col[1] < 20 and 25 < col[2] < 40:
+        if col[0] < 20 and col[1] < 20 and 20 < col[2]:
             return True
         return False
 
     def is_white(self, col):
         # col = self.get_color_rgb()
-        if 10 < col[0] < 20 and 10 < col[1] < 20 and 10 < col[2] < 20:
+        if col[0] < 20 and col[1] < 20 and col[2] < 20:
             return True
         return False
 
