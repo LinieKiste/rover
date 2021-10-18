@@ -26,6 +26,7 @@ class colorSens:
         self.color_rgb = self.sensor.color_rgb_bytes
 
     def get_color_name(self, new_data_from_sensor=True):
+        print(self.color_rgb)
         if new_data_from_sensor:
             self.get_color_from_sensor()
             self.get_color_rgb_from_sensor()
@@ -50,11 +51,11 @@ class colorSens:
 
     @staticmethod
     def is_between_green_and_red(col):
-        return 10 <= col[0] and 10 <= col[1] and col[2] < 10
+        return 10 <= col[0] and 10 <= col[1] and col[2] < 15
 
     @staticmethod
     def is_green(col):
-        return col[0] < 20 and 17 <= col[1] and col[2] < 20
+        return col[0] < 20 and 20 <= col[1] and col[2] < 20
 
     @staticmethod
     def is_red(col):
@@ -66,7 +67,7 @@ class colorSens:
 
     @staticmethod
     def is_white(col):
-        return col[0] < 20 and col[1] < 17 and col[2] < 20
+        return col[0] < 20 and col[1] < 20 and col[2] < 20
 
     def show_color(self):
         print("RGB color as 8 bits per channel int:" +
