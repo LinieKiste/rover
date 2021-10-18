@@ -6,13 +6,17 @@ from distanceSensor import rpTut
 import time
 
 
+def findline(m):
+    m.stop()
+
+
 def nav(m, c):
     while True:
         if rpTut.distance() > 10:
             if c.is_red():
                 m.forwards()
             else:
-                m.stop()
+                findline(m)
         else:
             m.stop()
         time.sleep(0.3)
