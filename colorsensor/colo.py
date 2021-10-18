@@ -58,8 +58,8 @@ if __name__ == "__main__":
         color_rgb = c.get_color_rgb()
 
         if prev_color != color:
-            if not (c.is_red(color)) and not (c.is_blue(color)) and \
-                    not (c.is_white(color)) and not (c.is_green(color)):
+            if not (c.is_red(color_rgb)) and not (c.is_blue(color_rgb)) and \
+                    not (c.is_white(color_rgb)) and not (c.is_green(color_rgb)):
                 print("RGB color as 8 bits per channel int: " +
                       "#{0:02X} or as a 3-tuple: {1}".format(
                           color, color_rgb))
