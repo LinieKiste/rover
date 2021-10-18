@@ -14,12 +14,13 @@ def nav(m, c):
     while True:
         if rpTut.distance() > 10:
             if c.is_red():
+                print("red")
                 m.forwards()
             else:
+                print("not red")
                 findline(m)
         else:
             m.stop()
-        time.sleep(0.3)
 
 
 if __name__ == "__main__":
