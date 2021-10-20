@@ -106,7 +106,7 @@ class motors:
 
 if __name__ == "__main__":
     # kickstart()
-    m = motors()
+    m = motors(80)
     m.keyboard_unbuffered()
     # while True:
     #     if time.time()-first < 5:
