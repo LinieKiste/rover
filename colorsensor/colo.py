@@ -39,9 +39,9 @@ class ColorSensor:
         elif self.is_blue():
             return "blue"
         elif self.is_between_green_and_blue():
-            return "between_green_and_blue"
+            return "blue"
         else:
-            return "no_color_found"
+            return "white"
 
     def is_between_green_and_blue(self):
         return self.color_rgb[0] < 10 and 10 <= self.color_rgb[1] and 10 <= self.color_rgb[2]
