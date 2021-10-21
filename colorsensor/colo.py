@@ -14,21 +14,22 @@ class ColorSensor:
         self.sensor = adafruit_tcs34725.TCS34725(self.i2c)
         self.color = self.sensor.color
         self.get_color_from_sensor()
-        self.get_color_rgb_from_sensor()
 
-    # returns rgb as a hex value
+    def get_color(self):
+        return self.color
+
+    def get_color_rgb(self):
+        return self.color_rgb
+
+    # gets rgb as a hex value
     def get_color_from_sensor(self):
         self.color = self.sensor.color
-
-    # returns (r, g, b) as a tuple
-    def get_color_rgb_from_sensor(self):
         self.color_rgb = self.sensor.color_rgb_bytes
 
     def get_color_name(self, get_new_data_from_sensor=True):
         # print(self.color_rgb)
         if get_new_data_from_sensor:
             self.get_color_from_sensor()
-            self.get_color_rgb_from_sensor()
 
         if self.is_red():
             return "red"
