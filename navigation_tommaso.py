@@ -47,5 +47,5 @@ def nav(color_sensor, distance_sensor):
 
 if __name__ == "__main__":
     color_sensor1 = colo.ColorSensor()
-    distance_sensor = rpTut.sist()
+    distance_sensor = rpTut.distance()
     nav(color_sensor1, distance_sensor)
