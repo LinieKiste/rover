@@ -7,7 +7,7 @@ import time
 
 
 def create_color_spectrum(color_sensor):
-    for i in range(10):
+    while True:
         print("start moving")
         f = open("color_spectrum_red_"+str(i)+"_V02.txt", "w")
         color_sensor.get_color_from_sensor()
@@ -18,7 +18,7 @@ def create_color_spectrum(color_sensor):
             color_sensor.get_color_from_sensor()
             f.write(", " + str(color_sensor.get_color_rgb()))
             f.close()
-        duration_break = 30
+        duration_break = 20
         for c in range(duration_break):
             print(str(c) + " of " + str(duration_break))
             time.sleep(1)
