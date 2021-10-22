@@ -15,21 +15,23 @@ class ColorSensor:
         self.color = self.sensor.color
         self.get_color_from_sensor()
 
-    def get_color(self):
-        return self.color
-
-    def get_color_rgb(self):
-        return self.color_rgb
-
-    # gets rgb as a hex value
+    # returns rgb as a hex value
     def get_color_from_sensor(self):
         self.color = self.sensor.color
         self.color_rgb = self.sensor.color_rgb_bytes
+
+    def get_color(self, as_rgb_byte = True, new_colors_from_sensor = True):
+        if new_colors_from_sensor:
+            self.get_color_from_sensor()
+        if as_rgb_byte:
+            return self.color_rgb
+        return self.color
 
     def get_color_name(self, get_new_data_from_sensor=True):
         # print(self.color_rgb)
         if get_new_data_from_sensor:
             self.get_color_from_sensor()
+            self.get_color_rgb_from_sensor()
 
         if self.is_red():
             return "red"
@@ -40,9 +42,9 @@ class ColorSensor:
         elif self.is_blue():
             return "blue"
         elif self.is_between_green_and_blue():
-            return "blue"
+            return "between_green_and_blue"
         else:
-            return "white"
+            return "no_color_found"
 
     def is_between_green_and_blue(self):
         return self.color_rgb[0] < 10 and 10 <= self.color_rgb[1] and 10 <= self.color_rgb[2]

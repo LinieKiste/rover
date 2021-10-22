@@ -8,31 +8,55 @@ from explorerhat import motor
 import time
 import simple_pid
 
-
+def kickstart(left_motor=True, right_motor=True):
+    if left_motor:
+        motor.one.forward(100)
+        time.sleep(0.01)
+    if right_motor:
+        motor.two.forward(100)
+        time.sleep(0.01)
 
 def nav(color_sensor):
-    explorerhat.motor.forward(100)
-    time.sleep(0.01)
-    pid_controller = simple_pid.PID(10, 0, 0, setpoint=60)
-    pid_controller.output_limits = (-10, 10)
-    while True:
-        color_sensor.get_color_from_sensor()
-        red_value = color_sensor.get_color_rgb()[0]
-        control = pid_controller(red_value)
-        print(control)
-        base_throttle = 50
-        offset = 4.5
-        left = base_throttle - offset - control
-        right = base_throttle + offset + control
+    use_offset = False
 
-        if left >= 0:
-            explorerhat.motor.one.forward(left)
+    # increase this variable, if it dies to often
+    base_speed = 25
+    limit = 0.5
+    offset = 0
+    if use_offset:
+        offset = 4.5
+        limit = 10
+
+    right_motor_runing = False
+    left_motor_runing = False
+    pid_controller = simple_pid.PID(0.1, 0.2, 0, setpoint=60, output_limits=(-limit, limit))
+
+    while True:
+        control = pid_controller(color_sensor.get_color()[0])
+        print(control)
+
+        # left motor
+        if control == limit:
+            left_motor_runing = False
+            motor.one.stop()
         else:
-            explorerhat.motor.one.backward(abs(left))
-        if right >= 0:
-            explorerhat.motor.two.forward(right)
+            if not left_motor_runing:
+                kickstart(True, False)
+                left_motor_runing = True
+            motor.one.forward(base_speed - offset - control)
+
+        # right motor
+        if control == -limit:
+            right_motor_runing = False
+            motor.two.stop()
         else:
-            explorerhat.motor.two.backward(abs(right))
+            if not right_motor_runing:
+                kickstart(False, True)
+                right_motor_runing = True
+            motor.two.forward(base_speed + offset + control)
+    motor.stop()
+
+
 
 
 if __name__ == "__main__":
