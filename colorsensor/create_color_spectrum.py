@@ -7,22 +7,21 @@ import time
 
 
 def create_color_spectrum(color_sensor):
-    for i in range(5):
-        motor.forward(100)
-        time.sleep(0.1)
-        motor.forward(50)
-        motor.one.forward(53)
+    for i in range(1):
+        print("start moving")
         f = open("color_spectrum_red_"+str(i)+".txt", "w")
         color_sensor.get_color_from_sensor()
         f.write(str(color_sensor.get_color_rgb()))
         f.close()
-        for _ in range(5000):
+        for _ in range(500):
             f = open("color_spectrum_red_"+str(i)+".txt", "a")
             color_sensor.get_color_from_sensor()
             f.write(", " + str(color_sensor.get_color_rgb()))
             f.close()
-        motor.stop()
-        time.sleep(5)
+        duration_break = 20
+        for c in range(duration_break):
+            print(str(c) + " of " + str(duration_break))
+            time.sleep(1)
 
 
 if __name__ == "__main__":
