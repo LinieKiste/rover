@@ -14,7 +14,7 @@ def create_color_spectrum(color_sensor):
         f.write(str(color_sensor.get_color_rgb()))
         f.close()
         for _ in range(700):
-            f = open("color_spectrum_red_"+str(i)+".txt", "a")
+            f = open("color_spectrum_red_"+str(i)+"_V02.txt", "a")
             color_sensor.get_color_from_sensor()
             f.write(", " + str(color_sensor.get_color_rgb()))
             f.close()
