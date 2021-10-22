@@ -9,7 +9,13 @@ import time
 
 
 
-def nav(color_sensor):
+def nav(color_sensor, distance_sensor):
+
+    while distance_sensor.distance() > 10:
+        motor.forward(60)
+    motor.stop()
+
+'''
     while True:
         while color_sensor.get_color_name() == "green":
             motor.forward(60)
@@ -37,8 +43,9 @@ def nav(color_sensor):
             # counter+=1
         # while color_sensor.get_color_name() == "no_color_found":
             # motor.backward(60)
-
+'''
 
 if __name__ == "__main__":
     color_sensor1 = colo.ColorSensor()
-    nav(color_sensor1)
+    distance_sensor = rpTut.sist()
+    nav(color_sensor1, distance_sensor)

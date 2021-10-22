@@ -7,6 +7,7 @@ import time
 
 
 def create_color_spectrum(color_sensor):
+    i=0
     while True:
         print("start moving")
         f = open("color_spectrum_red_"+str(i)+"_V02.txt", "w")
@@ -22,6 +23,7 @@ def create_color_spectrum(color_sensor):
         for c in range(duration_break):
             print(str(c) + " of " + str(duration_break))
             time.sleep(1)
+        i+=1
 
 
 if __name__ == "__main__":
