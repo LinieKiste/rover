@@ -11,11 +11,12 @@ def create_color_spectrum(color_sensor):
         motor.forward(100)
         time.sleep(0.1)
         motor.forward(50)
+        motor.one.forward(53)
         f = open("color_spectrum_red_"+str(i)+".txt", "w")
         color_sensor.get_color_from_sensor()
         f.write(str(color_sensor.get_color_rgb()))
         f.close()
-        for _ in range(10000):
+        for _ in range(5000):
             f = open("color_spectrum_red_"+str(i)+".txt", "a")
             color_sensor.get_color_from_sensor()
             f.write(", " + str(color_sensor.get_color_rgb()))
