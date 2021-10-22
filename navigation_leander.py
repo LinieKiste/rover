@@ -13,11 +13,12 @@ import simple_pid
 def nav(color_sensor):
     explorerhat.motor.forward(100)
     time.sleep(0.01)
-    pid_controller = simple_pid.PID(10, 0, 0, setpoint=0)
+    pid_controller = simple_pid.PID(10, 0, 0, setpoint=60)
+    pid_controller.output_limits = (-10, 10)
     while True:
         color_sensor.get_color_from_sensor()
         red_value = color_sensor.get_color_rgb()[0]
-        control = pid_controller(red_value/120 - 0.6)
+        control = pid_controller(red_value)
         print(control)
         base_throttle = 50
         offset = 4.5
