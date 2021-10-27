@@ -10,18 +10,19 @@ import simple_pid
 
 
 class Navigator:
-    def __init__(self):
-        self.base_speed = 25
-        self.limit = 0.5
+    def __init__(self, very_slow=False):
+        self.very_slow = very_slow
+        self.base_speed = 41
+        self.limit = 1
         self.motors_status = {motor.one: False, motor.two: False}
-        self.pid_controller = simple_pid.PID(0.1, 0.2, 0, setpoint=60,
+        self.pid_controller = simple_pid.PID(0.1, 10, 0, setpoint=50,
                                              output_limits=(-self.limit, self.limit))
 
     def kickstart(self, motors_list):
         for m in motors_list:
             m.forward(100)
             self.motors_status[m] = True
-        time.sleep(0.01)
+        time.sleep(0.02)
 
     def forward(self, motors_list, speed):
         for m in motors_list:
@@ -33,6 +34,8 @@ class Navigator:
 
     def navigate(self, color_sensor):
         while True:
+            if self.very_slow:
+                self.forward([motor.one, motor.two], 0)
             while rpTut.distance() < 10:  # avoid collisions
                 self.forward([motor.one, motor.two], 0)
             control = self.pid_controller(color_sensor.get_color()[0])
