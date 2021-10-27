@@ -31,7 +31,7 @@ class ColorSensor:
         # print(self.color_rgb)
         if get_new_data_from_sensor:
             self.get_color_from_sensor()
-            self.get_color_rgb_from_sensor()
+            self.get_color_from_sensor()
 
         if self.is_red():
             return "red"
@@ -50,7 +50,7 @@ class ColorSensor:
         return self.color_rgb[0] < 10 and 10 <= self.color_rgb[1] and 10 <= self.color_rgb[2]
 
     def is_green(self):
-        return self.color_rgb[0] < 20 and 20 <= self.color_rgb[1] and self.color_rgb[2] < 20
+        return self.color_rgb[0] < 20 and self.color_rgb[1] >= 20 and self.color_rgb[2] <= 25
 
     def is_red(self):
         return 20 <= self.color_rgb[0] and self.color_rgb[1] < 20 and self.color_rgb[2] < 20
