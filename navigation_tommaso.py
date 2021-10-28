@@ -6,7 +6,7 @@ from distanceSensor import rpTut
 from explorerhat import touch as button
 from explorerhat import motor
 import time
-from navigation_leander_w_history.py import PIDNavigatorRed
+from navigation_leander_w_history import PIDNavigatorRed
 
 
 class SimpleNavigatorRed:

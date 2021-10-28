@@ -34,7 +34,7 @@ class PIDNavigatorRed:
 
     def navigate(self, color_sensor):
         while True:
-            if button.four.is_pressed()
+            if button.four.is_pressed():
                 self.forward([motor.one, motor.two], 0)
                 break
             if self.very_slow:
