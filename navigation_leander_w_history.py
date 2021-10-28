@@ -42,17 +42,25 @@ class PIDNavigatorRedSimple:
         self.color_sensor = color_sensor
 
     def navigate(self):
+        limits = [20, 60]
+        speed = 100
         while True:
-            if self.caebh.check_for_collision_and_emergency_break(self):
-                break
-            if self.color_sensor.get_color()[0] > 40:
-                motor.one.forward(50)
-            else:
-                motor.one.stop()
-            if self.color_sensor.get_color(True, False)[0] < 60:
-                motor.two.forward(50)
-            else:
-                motor.two.stop()
+            # if self.caebh.check_for_collision_and_emergency_break():
+                # break
+            while limits[0] < self.color_sensor.get_color()[0] < limits[1]:
+                motor.forward(100)
+                time.sleep(0.01)
+                motor.stop()
+            while self.color_sensor.get_color()[0] >= limits[1]:
+                # motor.one.forward(speed)
+                motor.two.backward(speed)
+                time.sleep(0.016)
+                motor.stop()
+            while self.color_sensor.get_color()[0] <= limits[0]:
+                motor.one.backward(speed)
+                # motor.two.forward(speed)
+                time.sleep(0.015)
+                motor.stop()
 
 
 class PIDNavigatorRed:
@@ -84,7 +92,7 @@ class PIDNavigatorRed:
         while True:
             if self.caebh.check_for_collision_and_emergency_break(self):
                 break
-            control = self.pid_controller(color_sensor.get_color()[0])
+            control = self.pid_controller(self.olor_sensor.get_color()[0])
             print("control: ", control)
             # left motor
             self.forward([motor.one], 0 if control == self.limit else self.base_speed - control)

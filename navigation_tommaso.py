@@ -7,7 +7,7 @@ from explorerhat import touch as button
 from explorerhat import motor
 # from RPi import GPIO
 import time
-from navigation_leander_w_history import PIDNavigatorRed, CollisionAndEmergencyBreakHandler
+from navigation_leander_w_history import PIDNavigatorRed, CollisionAndEmergencyBreakHandler, PIDNavigatorRedSimple
 
 
 class SimpleNavigatorRed:
