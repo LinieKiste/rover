@@ -9,12 +9,34 @@ import simple_pid
 from RPi import GPIO
 
 
-class PIDNavigatorRed:
-    def __init__(self, very_slow=False, emergency_break_pin=22):
-        self.very_slow = very_slow
-        self.base_speed = 41
+class CollisionAndEmergencyBreakHandler:
+    def __init__(self, emergency_break_pin=22):
         GPIO.setup(emergency_break_pin, GPIO.IN)
         self.emergency_break_pin = emergency_break_pin
+
+    def check_for_emergency_break(self):
+        if GPIO.input(self.emergency_break_pin) == 1:
+            print("emergency break detected")
+            return True
+        return False
+
+    def check_for_collision_and_emergency_break(self, navigator=None):
+        while rpTut.distance() < 10:  # avoid collisions
+            if navigator:
+                navigator.forward([motor.one, motor.two], 0)
+            else:
+                motor.stop()
+            if self.check_for_emergency_break():
+                break
+        return self.check_for_emergency_break(self)
+
+
+
+class PIDNavigatorRed:
+    def __init__(self, collision_and_emergency_break_handler, very_slow=False):
+        self.caebh = collision_and_emergency_break_handler
+        self.very_slow = very_slow
+        self.base_speed = 41
         self.limit = 1
         self.motors_status = {motor.one: False, motor.two: False}
         self.pid_controller = simple_pid.PID(0.1, 10, 0, setpoint=50,
@@ -35,16 +57,9 @@ class PIDNavigatorRed:
             m.forward(speed)
 
     def navigate(self, color_sensor):
-        if self.very_slow:
-            self.forward([motor.one, motor.two], 0)
         while True:
-            if GPIO.input(self.emergency_break_pin) == 1:
-                print("emergency break detected")
-                self.forward([motor.one, motor.two], 0)
+            if self.caebh.check_for_collision_and_emergency_break(self):
                 break
-            while rpTut.distance() < 10:  # avoid collisions
-                self.forward([motor.one, motor.two], 0)
-                print("object detected")
             control = self.pid_controller(color_sensor.get_color()[0])
             print("control: ", control)
             # left motor
@@ -55,5 +70,6 @@ class PIDNavigatorRed:
 
 if __name__ == "__main__":
     color_sensor1 = colo.ColorSensor()
-    pid_navigator_red = PIDNavigatorRed()
-    pid_navigator_red.navigate(color_sensor1)
+    caebh = CollisionAndEmergencyBreakHandler()
+    pid_navigator_red = PIDNavigatorRed(caebh)
+    pid_navigator_red.navigate(caebh, color_sensor1)
