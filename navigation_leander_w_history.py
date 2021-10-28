@@ -42,32 +42,47 @@ class PIDNavigatorRedSimple:
         self.color_sensor = color_sensor
 
     def navigate(self):
-        limits = [20, 60]
-        speed = 100
         while True:
-            # if self.caebh.check_for_collision_and_emergency_break():
-                # break
-            while limits[0] < self.color_sensor.get_color()[0] < limits[1]:
+            while 20 < self.color_sensor.get_color()[0] < 60:
                 motor.forward(100)
                 time.sleep(0.01)
                 motor.stop()
-            while self.color_sensor.get_color()[0] >= limits[1]:
-                # motor.one.forward(speed)
-                motor.two.backward(speed)
+            while self.color_sensor.get_color()[0] >= 60:
+                motor.two.backward(100)
                 time.sleep(0.016)
                 motor.stop()
-            while self.color_sensor.get_color()[0] <= limits[0]:
-                motor.one.backward(speed)
-                # motor.two.forward(speed)
+            while self.color_sensor.get_color()[0] <= 20:
+                motor.one.backward(100)
                 time.sleep(0.015)
                 motor.stop()
 
 
 class PIDNavigatorRed:
-    def __init__(self, color_sensor, collision_and_emergency_break_handler, very_slow=False):
+    def __init__(self, color_sensor, collision_and_emergency_break_handler):
         self.caebh = collision_and_emergency_break_handler
         self.color_sensor = color_sensor
-        self.very_slow = very_slow
+        self.limit = 30
+        self.pid_controller = simple_pid.PID(0.1, 10, 0, setpoint=50,
+                                             output_limits=(-self.limit, self.limit))
+
+    def navigate(self):
+        motor.forward(100)
+        time.sleep(0.01)
+        while True:
+            if self.caebh.check_for_collision_and_emergency_break(self):
+                break
+            control = self.pid_controller(self.color_sensor.get_color()[0])
+            print("control: ", control)
+            motor.one.forward(70-control)    # left motor
+            motor.two.forward(70+control)    # right motor
+            time.sleep(0.01)
+            motor.stop()
+
+
+class PIDNavigatorRedOld:
+    def __init__(self, color_sensor, collision_and_emergency_break_handler):
+        self.caebh = collision_and_emergency_break_handler
+        self.color_sensor = color_sensor
         self.base_speed = 41
         self.limit = 1
         self.motors_status = {motor.one: False, motor.two: False}
