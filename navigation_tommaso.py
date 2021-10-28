@@ -29,13 +29,13 @@ if __name__ == "__main__":
     color_sensor1 = colo.ColorSensor()
     caebh = CollisionAndEmergencyBreakHandler()
     simple_navigator_red = SimpleNavigatorRed(caebh)
-    pid_navigator_red = PIDNavigatorRed(caebh)
-    slow_pid_navigator_red = PIDNavigatorRed(caebh, True)
+    pid_navigator_red = PIDNavigatorRed(color_sensor1, caebh)
+    pid_navigator_red_simple = PIDNavigatorRedSimple(color_sensor1, caebh)
     while True:
         if button.one.is_pressed():
             simple_navigator_red.navigate(color_sensor1)
         if button.two.is_pressed():
-            pid_navigator_red.navigate(color_sensor1)
+            pid_navigator_red.navigate()
         if button.three.is_pressed():
-            slow_pid_navigator_red.navigate(color_sensor1)
+            pid_navigator_red_simple.navigate()
 
