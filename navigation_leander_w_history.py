@@ -56,5 +56,4 @@ if __name__ == "__main__":
     input_pin = 23
     GPIO.setup(input_pin, GPIO.IN)
     while True:
-        print("Hello")
         print(GPIO.input(input_pin))
