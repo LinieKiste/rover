@@ -5,6 +5,7 @@ from colorsensor import colo
 from distanceSensor import rpTut
 from explorerhat import touch as button
 from explorerhat import motor
+from RPi import GPIO
 import time
 from navigation_leander_w_history import PIDNavigatorRed
 
@@ -13,17 +14,19 @@ class SimpleNavigatorRed:
 
     def navigation(self, color_sensor):
         while True:
-            if button.four.is_pressed():
+            if GPIO.input(self.emergency_break_pin) == 1:
+                print("emergency break detected")
                 motor.stop()
                 break
-            while rpTut.distance() < 10: #avoid collisions
+            while rpTut.distance() < 10:  # avoid collisions
                 motor.stop()
+                print("object detected")
             if color_sensor.get_color()[0] < 80:                    
                 motor.one.forward(100)          
             if color_sensor.get_color(True, False)[0] > 50: 
                 motor.two.forward(100)
             time.sleep(0.02)
-            # motor.stop()
+            motor.stop()
 
 if __name__ == "__main__":
     color_sensor1 = colo.ColorSensor()
@@ -32,9 +35,9 @@ if __name__ == "__main__":
     slow_pid_navigator_red = PIDNavigatorRed(True)
     while True:
         if button.one.is_pressed():
-            simple_navigator_red.navigation(color_sensor)
+            simple_navigator_red.navigation(color_sensor1)
         if button.two.is_pressed():
-            pid_navigator_red.navigation(color_sensor)
+            pid_navigator_red.navigation(color_sensor1)
         if button.three.is_pressed():
-            slow_pid_navigator_red.navigation(color_sensor)
+            slow_pid_navigator_red.navigation(color_sensor1)
 

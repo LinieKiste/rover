@@ -35,19 +35,18 @@ class PIDNavigatorRed:
             m.forward(speed)
 
     def navigate(self, color_sensor):
+        if self.very_slow:
+            self.forward([motor.one, motor.two], 0)
         while True:
-            print(GPIO.input(self.emergency_break_pin))
             if GPIO.input(self.emergency_break_pin) == 1:
                 print("emergency break detected")
                 self.forward([motor.one, motor.two], 0)
                 break
-            if self.very_slow:
-                self.forward([motor.one, motor.two], 0)
             while rpTut.distance() < 10:  # avoid collisions
                 self.forward([motor.one, motor.two], 0)
                 print("object detected")
             control = self.pid_controller(color_sensor.get_color()[0])
-            print(control)
+            print("control: ", control)
             # left motor
             self.forward([motor.one], 0 if control == self.limit else self.base_speed - control)
             # right motor
