@@ -1,12 +1,11 @@
 #!/bin/env python3
 
-from motors import motors
-from colorsensor import colo
 from distanceSensor import rpTut
 from explorerhat import touch as button
 from explorerhat import motor
 import time
 import simple_pid
+import RPi.GPIO as GPIO
 
 
 class PIDNavigatorRed:
@@ -50,6 +49,8 @@ class PIDNavigatorRed:
 
 
 if __name__ == "__main__":
-    color_sensor1 = colo.ColorSensor()
-    pid_navigator_red = PIDNavigatorRed()
-    pid_navigator_red.navigate(color_sensor1)
+    # color_sensor1 = colo.ColorSensor()
+    # pid_navigator_red = PIDNavigatorRed()
+    # pid_navigator_red.navigate(color_sensor1)
+    while True:
+        print(GPIO.input(23))
