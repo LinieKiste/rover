@@ -1,17 +1,20 @@
 #!/bin/env python3
 
+from colorsensor import colo
 from distanceSensor import rpTut
 from explorerhat import touch as button
 from explorerhat import motor
 import time
 import simple_pid
-import RPi.GPIO as GPIO
+from RPi import GPIO
 
 
 class PIDNavigatorRed:
-    def __init__(self, very_slow=False):
+    def __init__(self, very_slow=False, emergency_break_pin=22):
         self.very_slow = very_slow
         self.base_speed = 41
+        GPIO.setup(emergency_break_pin, GPIO.IN)
+        self.emergency_break_pin = emergency_break_pin
         self.limit = 1
         self.motors_status = {motor.one: False, motor.two: False}
         self.pid_controller = simple_pid.PID(0.1, 10, 0, setpoint=50,
@@ -33,13 +36,16 @@ class PIDNavigatorRed:
 
     def navigate(self, color_sensor):
         while True:
-            if button.four.is_pressed() or GPIO.input(input_pin) == 1:
+            print(GPIO.input(self.emergency_break_pin))
+            if GPIO.input(self.emergency_break_pin) == 1:
+                print("emergency break detected")
                 self.forward([motor.one, motor.two], 0)
                 break
             if self.very_slow:
                 self.forward([motor.one, motor.two], 0)
             while rpTut.distance() < 10:  # avoid collisions
                 self.forward([motor.one, motor.two], 0)
+                print("object detected")
             control = self.pid_controller(color_sensor.get_color()[0])
             print(control)
             # left motor
@@ -49,14 +55,6 @@ class PIDNavigatorRed:
 
 
 if __name__ == "__main__":
-    # color_sensor1 = colo.ColorSensor()
-    # pid_navigator_red = PIDNavigatorRed()
-    # pid_navigator_red.navigate(color_sensor1)
-    GPIO.setmode(GPIO.BCM)
-    for gpio_pin in range(18, 26):
-        print(gpio_pin)
-        GPIO.setup(gpio_pin, GPIO.IN)
-    while True:
-        for gpio_pin in range(18, 26):
-            print(GPIO.input(gpio_pin))
-        print(20*"*")
+    color_sensor1 = colo.ColorSensor()
+    pid_navigator_red = PIDNavigatorRed()
+    pid_navigator_red.navigate(color_sensor1)
