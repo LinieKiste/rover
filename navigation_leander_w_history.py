@@ -53,10 +53,10 @@ if __name__ == "__main__":
     # pid_navigator_red = PIDNavigatorRed()
     # pid_navigator_red.navigate(color_sensor1)
     GPIO.setmode(GPIO.BCM)
-    for gpio_pin in range(1,40):
+    for gpio_pin in range(18, 26):
         print(gpio_pin)
         GPIO.setup(gpio_pin, GPIO.IN)
     while True:
-        for gpio_pin in range(1, 40):
+        for gpio_pin in range(18, 26):
             print(GPIO.input(gpio_pin))
         print(20*"*")
