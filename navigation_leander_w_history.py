@@ -14,21 +14,25 @@ class CollisionAndEmergencyBreakHandler:
         GPIO.setup(emergency_break_pin, GPIO.IN)
         self.emergency_break_pin = emergency_break_pin
 
-    def check_for_emergency_break(self):
+    def stop_motors(self, navigator=None):
+        if navigator:
+            navigator.forward([motor.one, motor.two], 0)
+        else:
+            motor.stop()
+
+    def check_for_emergency_break(self, navigator=None):
         if GPIO.input(self.emergency_break_pin) == 1:
+            self.stop_motors(navigator)
             print("emergency break detected")
             return True
         return False
 
     def check_for_collision_and_emergency_break(self, navigator=None):
         while rpTut.distance() < 10:  # avoid collisions
-            if navigator:
-                navigator.forward([motor.one, motor.two], 0)
-            else:
-                motor.stop()
-            if self.check_for_emergency_break():
+            self.stop_motors(navigator)
+            if self.check_for_emergency_break(navigator):
                 break
-        return self.check_for_emergency_break(self)
+        return self.check_for_emergency_break(navigator)
 
 
 
