@@ -52,5 +52,9 @@ if __name__ == "__main__":
     # color_sensor1 = colo.ColorSensor()
     # pid_navigator_red = PIDNavigatorRed()
     # pid_navigator_red.navigate(color_sensor1)
+    GPIO.setmode(GPIO.BCM)
+    input_pin = 23
+    GPIO.setup(input_pin, GPIO.IN)
     while True:
-        print(GPIO.input(23))
+        print("Hello")
+        print(GPIO.input(input_pin))
