@@ -3,13 +3,13 @@
 from motors import motors
 from colorsensor import colo
 from distanceSensor import rpTut
-import explorerhat
+from explorerhat import touch as button
 from explorerhat import motor
 import time
 import simple_pid
 
 
-class Navigator:
+class PIDNavigatorRed:
     def __init__(self, very_slow=False):
         self.very_slow = very_slow
         self.base_speed = 41
@@ -34,6 +34,9 @@ class Navigator:
 
     def navigate(self, color_sensor):
         while True:
+            if button.four.is_pressed()
+                self.forward([motor.one, motor.two], 0)
+                break
             if self.very_slow:
                 self.forward([motor.one, motor.two], 0)
             while rpTut.distance() < 10:  # avoid collisions
@@ -48,5 +51,5 @@ class Navigator:
 
 if __name__ == "__main__":
     color_sensor1 = colo.ColorSensor()
-    navigator1 = Navigator()
-    navigator1.navigate(color_sensor1)
+    pid_navigator_red = PIDNavigatorRed()
+    pid_navigator_red.navigate(color_sensor1)
