@@ -7,7 +7,7 @@ from explorerhat import touch as button
 from explorerhat import motor
 # from RPi import GPIO
 import time
-from navigation_leander_w_history import PIDNavigatorRed, CollisionAndEmergencyBreakHandler, PIDNavigatorRedSimple
+from navigation_leander_w_history import PIDNavigatorRed, CollisionAndEmergencyBreakHandler, PIDNavigatorRedSimple, PIDNavigatorRedSlow
 
 
 class SimpleNavigatorRed:
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     color_sensor1 = colo.ColorSensor()
     caebh = CollisionAndEmergencyBreakHandler()
     simple_navigator_red = SimpleNavigatorRed(caebh)
-    pid_navigator_red = PIDNavigatorRed(color_sensor1, caebh)
+    pid_navigator_red = PIDNavigatorRedSlow(color_sensor1, caebh)
     pid_navigator_red_simple = PIDNavigatorRedSimple(color_sensor1, caebh)
     while True:
         if button.one.is_pressed():

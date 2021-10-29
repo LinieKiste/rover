@@ -57,29 +57,35 @@ class PIDNavigatorRedSimple:
                 motor.stop()
 
 
-class PIDNavigatorRed:
+class PIDNavigatorRedSlow:
     def __init__(self, color_sensor, collision_and_emergency_break_handler):
         self.caebh = collision_and_emergency_break_handler
         self.color_sensor = color_sensor
-        self.limit = 30
-        self.pid_controller = simple_pid.PID(0.1, 10, 0, setpoint=50,
+        self.limit = 24
+        self.pid_controller = simple_pid.PID(5, 1, 0.01, setpoint=40,
                                              output_limits=(-self.limit, self.limit))
 
     def navigate(self):
+        # move rover to the right side of the tape
+        motor.two.backward(100)
+        time.sleep(0.3)
         motor.forward(100)
-        time.sleep(0.01)
-        while True:
-            if self.caebh.check_for_collision_and_emergency_break(self):
-                break
+        time.sleep(0.15)
+        motor.stop()
+        while not self.caebh.check_for_collision_and_emergency_break():
+            motor.stop()
+            if self.color_sensor.get_color()[0] <= 16 or\
+                    self.color_sensor.get_color()[0] > 70:
+                motor.backward(100)
+                time.sleep(0.01)
             control = self.pid_controller(self.color_sensor.get_color()[0])
             print("control: ", control)
-            motor.one.forward(70-control)    # left motor
-            motor.two.forward(70+control)    # right motor
-            time.sleep(0.01)
-            motor.stop()
+            motor.one.forward(66-control)   # left motor
+            motor.two.forward(66+control)    # right motor
+            time.sleep(0.03)
 
 
-class PIDNavigatorRedOld:
+class PIDNavigatorRed:
     def __init__(self, color_sensor, collision_and_emergency_break_handler):
         self.caebh = collision_and_emergency_break_handler
         self.color_sensor = color_sensor
@@ -107,7 +113,7 @@ class PIDNavigatorRedOld:
         while True:
             if self.caebh.check_for_collision_and_emergency_break(self):
                 break
-            control = self.pid_controller(self.olor_sensor.get_color()[0])
+            control = self.pid_controller(self.color_sensor.get_color()[0])
             print("control: ", control)
             # left motor
             self.forward([motor.one], 0 if control == self.limit else self.base_speed - control)
@@ -120,4 +126,4 @@ if __name__ == "__main__":
     caebh = CollisionAndEmergencyBreakHandler()
     pid_navigator_red = PIDNavigatorRed(color_sensor1, caebh)
     pid_navigator_red_simple = PIDNavigatorRedSimple(color_sensor1, caebh)
-    pid_navigator_red_simple.navigate()
+    pid_navigator_red.navigate()
