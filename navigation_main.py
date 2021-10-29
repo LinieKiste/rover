@@ -19,7 +19,7 @@ if __name__ == "__main__":
     pid_navigator_red_simple = PIDNavigatorRedSimple(color_sensor1, caebh)
     while True:
         if button.one.is_pressed():
-            time.sleep(0.1)
+            time.sleep(0.25)
             print("B1 pressed: SimpleNavigatorRed")
             print("Press button 1 if the rover will drive clockwise\nPress button 2 if the rover will  drive counterclockwise")
             while True:
