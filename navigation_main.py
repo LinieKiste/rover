@@ -21,7 +21,7 @@ if __name__ == "__main__":
         if button.one.is_pressed():
             time.sleep(0.25)
             print("B1 pressed: SimpleNavigatorRed")
-            print("Press button 1 if the rover will drive clockwise\nPress button 2 if the rover will  drive counterclockwise")
+            print("Press button 1 if the rover will drive clockwise\nPress button 2 if the rover will drive counterclockwise")
             while True:
                 if button.one.is_pressed():
                     print("Rover driving clockwise")
@@ -35,9 +35,8 @@ if __name__ == "__main__":
                     break
 
         elif button.two.is_pressed():
-            print("B2 pressed: PIDNavigatorRed")
+            print("B2 pressed: PIDNavigatorRedSlow")
             pid_navigator_red.navigate()
         elif button.three.is_pressed():
             print("B3 pressed: PIDNavigatorRedSimple")
             pid_navigator_red_simple.navigate()
-
