@@ -9,15 +9,30 @@ from explorerhat import motor
 import time
 from navigation_leander_w_history import PIDNavigatorRed, CollisionAndEmergencyBreakHandler, PIDNavigatorRedSimple, PIDNavigatorRedSlow
 from navigation_tommaso import SimpleNavigatorRed
+from camera.camera import Camera
 
 
 if __name__ == "__main__":
     color_sensor1 = colo.ColorSensor()
+    cam = Camera()
     caebh = CollisionAndEmergencyBreakHandler()
     simple_navigator_red = SimpleNavigatorRed(caebh)
     pid_navigator_red = PIDNavigatorRedSlow(color_sensor1, caebh)
     pid_navigator_red_simple = PIDNavigatorRedSimple(color_sensor1, caebh)
     pid_navigator_red_final = PIDNavigatorRed(color_sensor1, caebh) 
+    # QR CODE STUFF
+    qr_data = cam.find()
+    motor.stop()
+    if qr_data is not None:
+        print(f"found qr code data: {qr_data}")
+        cam.rotate(False)
+        time.sleep(.1)
+        motor.forward(60)
+        while True:
+            if caebh.check_for_collision():
+                motor.stop()
+                exit()
+    print("No QR-code found, continuing with line-following behavior")
     while True:
         if button.one.is_pressed():
             time.sleep(0.25)
