@@ -42,7 +42,9 @@ class PIDNavigatorRedSimple:
         self.color_sensor = color_sensor
 
     def navigate(self):
-        while not self.caebh.check_for_collision_and_emergency_break():
+        while True:
+            if self.caebh.check_for_collision_and_emergency_break(self):
+                break
             while 20 < self.color_sensor.get_color()[0] < 60:
                 motor.forward(100)
                 time.sleep(0.01)

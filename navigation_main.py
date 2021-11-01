@@ -17,6 +17,7 @@ if __name__ == "__main__":
     simple_navigator_red = SimpleNavigatorRed(caebh)
     pid_navigator_red = PIDNavigatorRedSlow(color_sensor1, caebh)
     pid_navigator_red_simple = PIDNavigatorRedSimple(color_sensor1, caebh)
+    pid_navigator_red_final = PIDNavigatorRed(color_sensor1, caebh) 
     while True:
         if button.one.is_pressed():
             time.sleep(0.25)
@@ -40,3 +41,6 @@ if __name__ == "__main__":
         elif button.three.is_pressed():
             print("B3 pressed: PIDNavigatorRedSimple")
             pid_navigator_red_simple.navigate()
+        elif button.four.is_pressed():
+            print("B4 pressed: PIDNavigatorRed")
+            pid_navigator_red_final.navigate()

@@ -45,37 +45,44 @@ class PIDNavigatorRed:
             simple_pid.PID(5, 1, 0.01, setpoint=self.setpoint_pid_slow,
                            output_limits=(-self.limit_pid_slow, self.limit_pid_slow))
         self.base_speed_pid_fast = 41
-        self.limit_pid_fast = 1
+        self.limit_pid_fast = 10
         self.motors_status_pid_fast = {motor.one: False, motor.two: False}
         self.pid_controller_pid_fast = \
-            simple_pid.PID(0.1, 10, 0, setpoint=50,
+            simple_pid.PID(1, 10, 0, setpoint=50,
                            output_limits=(-self.limit_pid_fast, self.limit_pid_fast))
 
     def navigate(self):
         # move the rover to the right side of the line
-        motor.two.backward(100)
-        time.sleep(0.3)
-        motor.forward(100)
-        time.sleep(0.15)
+        # motor.two.backward(100)
+        # time.sleep(0.3)
+        # motor.forward(100)
+        # time.sleep(0.15)
         motor.stop()
         while True:
-            if self.navigate_fast and self.navigate_slowly:
-                pass
+            self.motors_status_pid_fast = {motor.one: False, motor.two: False}
+            if self.navigate_fast():
+                motor.backward(100)
+                time.sleep(0.1)
+                if self.navigate_slowly():
+                    pass
+                else:
+                    break
             else:
                 break
+            motor.backward(100)
 
     def navigate_slowly(self):
+        print("entered slow navigating")
         perfect_color_detected = 0
         while not self.caebh.check_for_collision_and_emergency_break():
             motor.stop()
-            if self.color_sensor.get_color()[0] == self.setpoint_pid_slow:
+            if self.setpoint_pid_slow -20 < self.color_sensor.get_color()[0] < 20 + self.setpoint_pid_slow:
                 perfect_color_detected += 1
-            if perfect_color_detected > 20:
+            if perfect_color_detected > 10:
                 return True
             elif self.color_sensor.get_color()[0] <= 16 or \
                     self.color_sensor.get_color()[0] > 70:
                 motor.backward(100)
-                time.sleep(0.01)
                 perfect_color_detected = 0
             control = self.pid_controller_pid_slow(self.color_sensor.get_color()[0])
             print("control: ", control)
@@ -99,22 +106,22 @@ class PIDNavigatorRed:
             m.forward(speed)
 
     def navigate_fast(self):
+        print("entered fast navigating")
         while not self.caebh.check_for_collision_and_emergency_break(self):
+            if 100 < self.color_sensor.get_color()[0] <= 16:
+                return True
             control = self.pid_controller_pid_fast(self.color_sensor.get_color()[0])
             print("control: ", control)
             # left motor
-            if control == self.limit_pid_fast:
-                self.forward([motor.one], 0)
-            else:
-                self.forward([motor.one], self.base_speed_pid_fast - control)
+            # if control == self.limit_pid_fast:
+                # self.forward([motor.one], 0)
+            # else:
+            self.forward([motor.one], self.base_speed_pid_fast - control)
             # right motor
-            if control == -self.limit_pid_fast:
-                self.forward([motor.two], 0)
-            else:
-                self.forward([motor.two], self.base_speed_pid_fast + control)
-            if self.color_sensor.get_color()[0] <= 16 or \
-                    self.color_sensor.get_color()[0] > 70:
-                return True
+            # if control == -self.limit_pid_fast:
+                # self.forward([motor.two], 0)
+            # else:
+            self.forward([motor.two], self.base_speed_pid_fast + control)
         return False
 
 
