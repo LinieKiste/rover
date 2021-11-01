@@ -1,70 +1,123 @@
 #!/bin/env python3
 
-from motors import motors
 from colorsensor import colo
 from distanceSensor import rpTut
-import explorerhat
 from explorerhat import motor
 import time
 import simple_pid
+from RPi import GPIO
 
 
-def kickstart(left_motor=True, right_motor=True):
-    kickstart_time = 0.01
-    kickstart_speed = 100
-    if left_motor:
-        motor.one.forward(kickstart_speed)
-        time.sleep(kickstart_time)
-    if right_motor:
-        motor.two.forward(kickstart_speed)
-        time.sleep(kickstart_time)
+def stop_motors(navigator=None):
+    if navigator:
+        navigator.forward([motor.one, motor.two], 0)
+    else:
+        motor.stop()
 
-def nav(color_sensor):
-    use_offset = False
 
-    # increase this variable, if it dies to often
-    base_speed = 50
-    limit = 5
-    offset = 0
-    if use_offset:
-        offset = 4.5
-        limit = 10
+class CollisionAndEmergencyBreakHandler:
+    def __init__(self, emergency_break_pin=22):
+        GPIO.setup(emergency_break_pin, GPIO.IN)
+        self.emergency_break_pin = emergency_break_pin
 
-    right_motor_runing = False
-    left_motor_runing = False
-    pid_controller = simple_pid.PID(0.5, 1, 1, setpoint=50, output_limits=(-limit, limit))
+    def check_for_emergency_break(self, navigator=None):
+        if GPIO.input(self.emergency_break_pin) == 1:
+            stop_motors(navigator)
+            print("emergency break detected")
+            return True
+        return False
 
-    while True:
-        while rpTut.distance() < 10:
-             right_motor_runing = False
-             left_motor_runing = False
-             motor.stop()
+    def check_for_collision_and_emergency_break(self, navigator=None):
+        while rpTut.distance() < 10:  # avoid collisions
+            stop_motors(navigator)
+            if self.check_for_emergency_break(navigator):
+                break
+        return self.check_for_emergency_break(navigator)
 
-        control = pid_controller(color_sensor.get_color()[0])
-        print(control)
 
-        # left motor
-        if control == limit:
-            left_motor_runing = False
-            motor.one.stop()
-        else:
-            if not left_motor_runing:
-                kickstart(True, False)
-                left_motor_runing = True
-            motor.one.forward(base_speed - offset - control)
+class PIDNavigatorRed:
+    def __init__(self):
+        self.caebh = CollisionAndEmergencyBreakHandler()
+        self.color_sensor = colo.ColorSensor()
+        self.limit_pid_slow = 24
+        self.setpoint_pid_slow = 40
+        self.pid_controller_pid_slow = \
+            simple_pid.PID(5, 1, 0.01, setpoint=self.setpoint_pid_slow,
+                           output_limits=(-self.limit_pid_slow, self.limit_pid_slow))
+        self.base_speed_pid_fast = 41
+        self.limit_pid_fast = 1
+        self.motors_status_pid_fast = {motor.one: False, motor.two: False}
+        self.pid_controller_pid_fast = \
+            simple_pid.PID(0.1, 10, 0, setpoint=50,
+                           output_limits=(-self.limit_pid_fast, self.limit_pid_fast))
 
-        # right motor
-        if control == -limit:
-            right_motor_runing = False
-            motor.two.stop()
-        else:
-            if not right_motor_runing:
-                kickstart(False, True)
-                right_motor_runing = True
-            motor.two.forward(base_speed + offset + control)
+    def navigate(self):
+        # move the rover to the right side of the line
+        motor.two.backward(100)
+        time.sleep(0.3)
+        motor.forward(100)
+        time.sleep(0.15)
+        motor.stop()
+        while True:
+            if self.navigate_fast and self.navigate_slowly:
+                pass
+            else:
+                break
 
+    def navigate_slowly(self):
+        perfect_color_detected = 0
+        while not self.caebh.check_for_collision_and_emergency_break():
+            motor.stop()
+            if self.color_sensor.get_color()[0] == self.setpoint_pid_slow:
+                perfect_color_detected += 1
+            if perfect_color_detected > 20:
+                return True
+            elif self.color_sensor.get_color()[0] <= 16 or \
+                    self.color_sensor.get_color()[0] > 70:
+                motor.backward(100)
+                time.sleep(0.01)
+                perfect_color_detected = 0
+            control = self.pid_controller_pid_slow(self.color_sensor.get_color()[0])
+            print("control: ", control)
+            motor.one.forward(66 - control)  # left motor
+            motor.two.forward(66 + control)  # right motor
+            time.sleep(0.03)
+        return False
+
+    def kickstart(self, motors_list):
+        for m in motors_list:
+            m.forward(100)
+            self.motors_status_pid_fast[m] = True
+        time.sleep(0.02)
+
+    def forward(self, motors_list, speed):
+        for m in motors_list:
+            if speed == 0:
+                self.motors_status_pid_fast[m] = False
+            elif not self.motors_status_pid_fast[m]:
+                self.kickstart([m])
+            m.forward(speed)
+
+    def navigate_fast(self):
+        while not self.caebh.check_for_collision_and_emergency_break(self):
+            control = self.pid_controller_pid_fast(self.color_sensor.get_color()[0])
+            print("control: ", control)
+            # left motor
+            if control == self.limit_pid_fast:
+                self.forward([motor.one], 0)
+            else:
+                self.forward([motor.one], self.base_speed_pid_fast - control)
+            # right motor
+            if control == -self.limit_pid_fast:
+                self.forward([motor.two], 0)
+            else:
+                self.forward([motor.two], self.base_speed_pid_fast + control)
+            if self.color_sensor.get_color()[0] <= 16 or \
+                    self.color_sensor.get_color()[0] > 70:
+                return True
+        return False
 
 
 if __name__ == "__main__":
-    color_sensor1 = colo.ColorSensor()
-    nav(color_sensor1)
+    pid_navigator_red_main = PIDNavigatorRed()
+    pid_navigator_red_main.navigate()
