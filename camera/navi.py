@@ -11,7 +11,7 @@ import atexit
 
 forward = 70
 rot = 50
-offset = 10
+offset = 2
 
 def rotate(left):
     x = rot
