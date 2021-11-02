@@ -32,10 +32,10 @@ class PIDNavigatorRed:
     def __init__(self):
         self.caebh = CollisionAndEmergencyBreakHandler()
         self.color_sensor = colo.ColorSensor()
-        self.limit = 24
-        self.setpoint = 40
+        self.limit = 10
+        self.setpoint = 25
         self.pid_controller = \
-            simple_pid.PID(4, 1, 0.01, setpoint=self.setpoint,
+            simple_pid.PID(1, 2, 0.01, setpoint=self.setpoint,
                            output_limits=(-self.limit, self.limit))
 
     def navigate(self):
@@ -45,21 +45,25 @@ class PIDNavigatorRed:
         # motor.forward(100)
         # time.sleep(0.15)
         motor.stop()
-        run_time = 0
+        timer = 2
         while not self.caebh.check_for_collision_and_emergency_break():
+            # motor.stop()
+            for i in range(timer):
+                if self.color_sensor.get_color()[0] <= 16 or \
+                        self.color_sensor.get_color()[0] > 70:
+                    motor.backward(100)
+                    time.sleep(0.01)
+                    if timer >= 5:
+                        timer -= 3
+                    break
+                time.sleep(0.001)
             motor.stop()
-            if self.color_sensor.get_color()[0] <= 16 or \
-                    self.color_sensor.get_color()[0] > 70:
-                motor.backward(100)
-                time.sleep(run_time)
-                run_time = 0.03
             control = self.pid_controller(self.color_sensor.get_color()[0])
             print("control: ", control)
-            motor.one.forward(66 - control)  # left motor
-            motor.two.forward(66 + control)  # right motor
-            time.sleep(run_time)
-            run_time += 0.01
-        return False
+            motor.one.forward(75 - control)  # left motor
+            motor.two.forward(75 + control)  # right motor
+            timer += 1
+
 
 
 if __name__ == "__main__":

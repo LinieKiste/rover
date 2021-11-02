@@ -11,17 +11,17 @@ import atexit
 
 forward = 70
 rot = 50
-offset = 15
+offset = 10
 
-def rotate(timespan):
-    x = 80
-    motor.one.forward(x)
-    motor.two.backward(x)
-    time.sleep(.03)
+def rotate(left):
     x = rot
-    motor.one.forward(x)
-    motor.two.backward(x)
-    time.sleep(timespan)
+    if left:
+        motor.one.forward(x)
+        motor.two.backward(x)
+    else:
+        motor.one.backward(x)
+        motor.two.forward(x)
+
 
 def kickstart(left):
     x = 80
@@ -55,27 +55,30 @@ def find(c):
             return data
             break
         else:
-            rotate(.2)
+            rotate(True)
+            time.sleep(.3)
 
 def instructions(fname):
     with open(fname, 'r') as f:
         lines = f.read().split('\n')
         for instr in lines:
             (key, t) = instr.split(' ')
+            print(f"looking at {key}, {t}")
             t = float(t)
             start = time.time()
             while time.time() - start < t:
                 if key == 'd':
                     kickstart(True)
-                    motor.one.forward(rot)
-                    motor.two.backward(rot)
-                if key == 'a':
+                    rotate(True)
+                elif key == 'a':
                     kickstart(False)
-                    motor.one.backward(rot)
-                    motor.two.forward( rot)
-                if key == 'w':
+                    rotate(False)
+                elif key == 'w':
                     motor.one.forward(forward)
                     motor.two.forward(forward+offset)
+                elif key == 's':
+                    motor.one.backward(forward)
+                    motor.two.backward(forward+offset)
             motor.stop()
             time.sleep(.3)
 
@@ -97,27 +100,31 @@ def keyboard(fname):
         start = time.time()
         if x == 'd':
             kickstart(True)
-            motor.one.forward(rot)
-            motor.two.backward(rot)
+            rotate(True)
             checkforspace()
             t = time.time() - start
             commands += "d " + str(t) + "\n"
-        if x == 'a':
+        elif x == 'a':
             kickstart(False)
-            motor.one.backward(rot)
-            motor.two.forward( rot)
+            rotate(False)
             checkforspace()
             t = time.time() - start
             commands += "a " + str(t) + "\n"
-        if x == 'w':
+        elif x == 'w':
             motor.one.forward(forward)
             motor.two.forward(forward+offset)
             checkforspace()
             t = time.time() - start
             commands += "w " + str(t) + "\n"
+        elif x == 's':
+            motor.one.backward(forward)
+            motor.two.backward(forward+offset)
+            checkforspace()
+            t = time.time() - start
+            commands += "s " + str(t) + "\n"
         print(f"{x} took {t} seconds")
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, orig_settings)
-    with open(fname, 'w') as f:
+    with open(fname + '.txt', 'w') as f:
         f.write(commands)
 
 def checkforspace():
@@ -130,6 +137,8 @@ def checkforspace():
 if __name__ == '__main__':
     c = Camera()
     if len(sys.argv) > 1:
+        if sys.argv[1] == 'd':
+            keyboard('trash')
         if sys.argv[1] == 'r':
             print('recording commands...')
             keyboard(sys.argv[2])

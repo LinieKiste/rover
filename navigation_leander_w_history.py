@@ -28,6 +28,12 @@ class CollisionAndEmergencyBreakHandler:
             return True
         return False
 
+    def check_for_collision(self, navigator=None):
+        if rpTut.distance() < 8:  # avoid collisions
+            stop_motors(navigator)
+            return True
+        return False
+
     def check_for_collision_and_emergency_break(self, navigator=None):
         while rpTut.distance() < 10:  # avoid collisions
             stop_motors(navigator)
