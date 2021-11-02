@@ -1,3 +1,4 @@
+#!/bin/python3
 import board
 import adafruit_tcs34725
 

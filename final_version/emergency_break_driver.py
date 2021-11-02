@@ -1,3 +1,4 @@
+#!/bin/python3
 from RPi import GPIO
 from explorerhat import motor
 
@@ -7,9 +8,8 @@ class EmergencyBreakDriver:
         self.emergency_break_detected = False
 
     def emergency_break_check(self):
-        if GPIO.input(22) == 1:
+        if not self.emergency_break_detected and GPIO.input(22) == 1:
             motor.stop()
             self.emergency_break_detected = True
             print("emergency break detected")
-            return True
-        return False
+        return self.emergency_break_detected

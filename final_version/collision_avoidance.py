@@ -15,17 +15,16 @@ class CollisionAvoidance:
             # (sonic speed: 34 300 000 m/s)
             if self.distance_sensor_driver.distance_to_object() > 0.001:
                 break
-            else:
-                motor.stop()
+            motor.stop()
+        return self.emergency_break_driver.emergency_break_check()
 
 
 # Testing
 from emergency_break_driver import EmergencyBreakDriver
 
 if __name__ == '__main__':
-    collision_handler = CollisionAvoidance(EmergencyBreakDriver())
-    while True:
+    ebd = EmergencyBreakDriver()
+    collision_handler = CollisionAvoidance(ebd)
+    while not ebd.emergency_break_detected:
         motor.forward(100)
         collision_handler.avoid_collision()
-        time.sleep(0.02)
-        motor.stop()

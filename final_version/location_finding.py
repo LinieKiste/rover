@@ -1,3 +1,4 @@
+#!/bin/python3
 from collision_avoidance import CollisionAvoidance
 from explorerhat import motor
 
