@@ -13,7 +13,7 @@ class CollisionAvoidance:
         while not self.emergency_break_driver.emergency_break_check():
             # No object closer than 15 cm if sound needs more than 0.001 s to come back
             # (sonic speed: 34 300 000 m/s)
-            if self.distance_sensor_driver.distance_to_object() > 0.001:
+            if self.distance_sensor_driver.distance_to_object() > 0.0005:
                 break
             motor.stop()
         return self.emergency_break_driver.emergency_break_check()

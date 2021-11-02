@@ -11,7 +11,7 @@ class Camera:
         self.rot = 80
 
     def __del__(self):
-        self.cap
+        self.cap.release()
 
     # returns either None or the data and the bounding size and distance from the center
     # pretty sure the size thing is wrong and the distance also but not as sure as with the size
