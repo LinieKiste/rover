@@ -12,25 +12,20 @@ class LocationFinding:
 
     def find_location(self):
         while not self.emergency_break_driver.emergency_break_check():
-            while not self.emergency_break_driver.emergency_break_check():
-                data = self.camMod.scan_qr_code()
-                for _ in range(8):
-                    if data is None:
-                        data = self.camMod.scan_qr_code()
-                motor.one.forward(100)
-                motor.two.backward(100)
-                time.sleep(.03)
-                if data is not None:
-                    break
-                motor.stop()
+            data = self.camMod.scan_qr_code()
+            for _ in range(8):
+                if data is None:
+                    data = self.camMod.scan_qr_code()
+            motor.one.forward(100)
+            motor.two.backward(100)
+            time.sleep(.03)
 
             if data is not None:
                 print(f"found QR code data: {data}")
-                data = None
                 motor.forward(70)
                 while not self.collision_avoidance.check_for_collison():
                     pass
-                motor.stop()
+            motor.stop()
 
 if __name__ == '__main__':
     from emergency_break_driver import EmergencyBreakDriver
